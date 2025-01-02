@@ -96,5 +96,27 @@ describe('/threads endpoint', () => {
             expect(responseJson.status).toEqual('fail');
             expect(responseJson.message).toEqual('tidak dapat menambahkan thread baru karena tipe data tidak sesuai');
         });
+
+        it('should response 401 when bearer token not provided', async () => {
+            await UsersTableTestHelper.addUser({ id: 'user-12345', username: 'dev' });
+
+            const requestPayload = {
+                title: 'new thread',
+                body: 'this is a great game'
+            };
+
+            const server = await createServer(container);
+
+            const response = await server.inject({
+                method: 'POST',
+                url: '/threads',
+                payload: requestPayload,
+            });
+
+            // Assert
+            const responseJson = JSON.parse(response.payload);
+            
+            expect(response.statusCode).toEqual(401);
+        });
     });
 });

@@ -13,17 +13,7 @@ exports.up = pgm => {
         }
     });
 
-    // Threads
-    pgm.addConstraint('threads', 'fk_threads.owner', {
-        foreignKeys: {
-            columns: 'owner',
-            references: 'users(id)',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        }
-    });
-
-    pgm.addConstraint('thread_comments', 'fk_thread_comments.thread', {
+    pgm.addConstraint('comments', 'fk_comments.thread_id', {
         foreignKeys: {
             columns: 'thread_id',
             references: 'threads(id)',
@@ -32,10 +22,11 @@ exports.up = pgm => {
         }
     });
 
-    pgm.addConstraint('thread_comments', 'fk_thread_comments.comment', {
+    // Threads
+    pgm.addConstraint('threads', 'fk_threads.owner', {
         foreignKeys: {
-            columns: 'comment_id',
-            references: 'comments(id)',
+            columns: 'owner',
+            references: 'users(id)',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         }
@@ -64,11 +55,10 @@ exports.up = pgm => {
 exports.down = pgm => {
      // Comments
      pgm.dropConstraint('comments', 'fk_comments.owner');
+     pgm.dropConstraint('comments', 'fk_comments.thrad_id');
 
     // Threads
     pgm.dropConstraint('threads', 'fk_threads.owner');
-    pgm.dropConstraint('thread_comments', 'fk_thread_comments.thread');
-    pgm.dropConstraint('thread_comments', 'fk_thread_comments.comment');
     
     // Replies
     pgm.dropConstraint('comment_replies', 'fk_comment_replies.comment');
